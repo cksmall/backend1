@@ -1,25 +1,29 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
- name: backend-deployment
-spec:
- selector:
-   matchLabels:
-    type: backend
- replicas: 2
- template:
-   metadata:
-     labels:
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: backend-deployment
+ spec:
+   selector:
+     matchLabels:
        type: backend
-   spec:
-    containers:
-    - name: backend
-      image: cksmall/backend:latest
-      envFrom:
-      ports:
-      - containerPort: 8000
-      resources:
-        requests:
-          cpu: 100m
-        limits:
-          cpu: 200m
+   replicas: 2
+   template:
+     metadata:
+       labels:
+         type: backend
+     spec:
+       containers:
+         - name: backend
+           image: cksmall/backend:latest
+           envFrom:
+             - configMapRef:
+                 name: mysql-cm
+             - secretRef:
+                 name: mysql-sec
+           ports:
+             - containerPort: 8000
+           resources:
+             requests:
+               cpu: 100m
+             limits:
+               cpu: 200m
